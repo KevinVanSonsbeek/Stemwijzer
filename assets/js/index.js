@@ -5,6 +5,7 @@ localStorage.clear();
  * Switches to screen showing questions
  */
 function changeToQuestionScreen() {
+    partiesList = {};
     var body = document.getElementById("main");
     body.innerHTML =
         "<div class=\"w3-container\">\n " +
@@ -23,11 +24,12 @@ function changeToQuestionScreen() {
             "</div>" +
             "<br>" +
         "</div>";
+
     loadQuestion(currentQuestion);
+
     for(var i = 0; i < parties.length; i++) {
         partiesList[parties[i].name] = 0;
     }
-    console.log(partiesList);
 }
 
 /**
@@ -39,12 +41,17 @@ function changeToMainScreen() {
 }
 
 function changeToEndResultScreen() {
+    calculatePartiePoints();
     var body = document.getElementById("main");
     body.innerHTML =
         "<div class=\"w3-container\">" +
-            "<h2></h2>" +
-        "" +
+            "<p><button class=\"w3-button w3-black w3-round w3-large\" onclick=\"changeToQuestionScreen()\">Terug</button></p>\n " +
+            "<h2>Uitslag:</h2>" +
         "</div>";
+
+    for (var c = 0; c < parties.length; c++) { //Loop through and compare partie positions
+        alertText += parties[c].name + ": " + partiesList[parties[c].name] + "\n";
+    }
 }
 /**
  * Changes title and statement in the DOM
@@ -61,7 +68,7 @@ function nextQuestion(id, choice) {//options: Pro, Contra, Ambivalent, none
     localStorage.setItem(id, choice);
 
     if(currentQuestion >= (subjects.length -1)) {
-        calculatePartiePoints();
+        changeToEndResultScreen();
     }
     else {
         currentQuestion = id + 1;
@@ -74,7 +81,6 @@ function nextQuestion(id, choice) {//options: Pro, Contra, Ambivalent, none
  * Loads previous question
  */
 function previousQuestion(id) {
-
     if(currentQuestion == 0) {
         changeToMainScreen();
     }
@@ -91,16 +97,26 @@ function showPartiesTable() {
     console.log("WIP");
 }
 
+/**
+ * Calculates points the parties get
+ */
 function calculatePartiePoints() {
 
-    for(var a = 0; a < subjects.length; a++) { //Loop through questions
+    for (var a = 0; a < subjects.length; a++) { //Loop through questions
 
-        for(var b = 0; b < subjects[a].parties.length; b++) { //Loop through and compare partie positions
+        for (var b = 0; b < subjects[a].parties.length; b++) { //Loop through and compare partie positions
 
-            if((localStorage[a] == "pro" && subjects[a].parties[b].position == "pro") || (localStorage[a] == "contra" && subjects[a].parties[b].position == "contra") || (localStorage[a] == "ambivalent" && subjects[a].parties[b].position == "ambivalent")) {
+            if ((localStorage[a] == "pro" && subjects[a].parties[b].position == "pro") || (localStorage[a] == "contra" && subjects[a].parties[b].position == "contra") || (localStorage[a] == "ambivalent" && subjects[a].parties[b].position == "ambivalent")) {
                 partiesList[subjects[a].parties[b].name] += 1;
             }
         }
 
     }
+
+    var alertText = "";
+    for (var c = 0; c < parties.length; c++) { //Loop through and compare partie positions
+        alertText += parties[c].name + ": " + partiesList[parties[c].name] + "\n";
+    }
+
+    alert(alertText);
 }
