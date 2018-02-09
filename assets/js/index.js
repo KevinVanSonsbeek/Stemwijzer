@@ -10,7 +10,10 @@ function changeToQuestionScreen() {
     partiesList = {};
     var startScreen = document.getElementById("startScreen");
     var questionScreen = document.getElementById("questionScreen");
+    var resultScreen = document.getElementById("resultScreen");
 
+
+    resultScreen.style.display = "none";
     startScreen.style.display = "none";
     questionScreen.style.display = "inline";
 
@@ -45,31 +48,23 @@ function changeToMainScreen() {
 
 function changeToEndResultScreen() {
     calculatePartiePoints();
-    var body = document.getElementById("main");
-    body.innerHTML =
-        "<div class=\"w3-container\">" +
-            "<p><button class=\"w3-button w3-black w3-round w3-large\" onclick=\"changeToQuestionScreen()\">Terug</button></p>\n " +
-            "<h2>Uitslag:</h2>" +
-            "<table id='myTable' class='w3-table w3-striped w3-border'>" +
-                "<tr>" +
-                    "<th>Partij</th>" +
-                    "<th>Punten</th>" +
-                "</tr>" +
-            "</table>" +
-        "</div>";
+    var resultScreen = document.getElementById("resultScreen");
+    var questionScreen = document.getElementById("questionScreen");
 
-    var table = document.getElementById("myTable");
+    var partieName = document.getElementById("partieName");
+    var partiePoints = document.getElementById("partiePoints");
+
+    partieName.innerHTML = "";
+    partiePoints.innerHTML = "";
+
+
+    resultScreen.style.display = "inline";
+    questionScreen.style.display = "none";
 
     for (var i = 0; i < parties.length; i++) { //Loop through and compare partie positions
-        var row = table.insertRow(1);
-
-        // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-
         // Add some text to the new cells:
-        cell1.innerHTML = parties[i].name;
-        cell2.innerHTML = partiesList[parties[i].name];
+        partieName.innerHTML += parties[i].name + "\n";
+        partiePoints.innerHTML += partiesList[parties[i].name] + "\n";
     }
 }
 /**
@@ -86,10 +81,14 @@ function loadQuestion(id) {
 function nextQuestion(id, choice) {
     //Save choice for question in local storage
     answers[id] = choice;
+    var partieOpinions = document.getElementById("partieOpinons");
+
+    partieOpinions.style.display = "none";
 
     if(currentQuestion >= (subjects.length -1)) {//If last question reached
         console.dir(answers);
-        changeToEndResultScreen();
+        selectImportantQuestions();
+        //changeToEndResultScreen();
     }
     else {//Load next question
         currentQuestion = id + 1;
@@ -102,6 +101,9 @@ function nextQuestion(id, choice) {
  * Loads previous question
  */
 function previousQuestion(id) {
+    var partieOpinions = document.getElementById("partieOpinons");
+
+    partieOpinons.style.display = "none";
     if(currentQuestion == 0) {
         changeToMainScreen();
     }
@@ -150,9 +152,27 @@ function calculatePartiePoints() {
 }
 
 function selectImportantQuestions() {
+    var partiesForm = document.getElementById("partiesForm");
+    for(var i = 0; i < subjects.length; i++){
+
+        // var btn = document.createElement("INPUT");
+        // btn.type = "checkbox";
+        // var t = document.createTextNode("CLICK ME");
+        // btn.appendChild(t);
+        //
+        // partiesForm.appendChild(btn);
+
+
+        partiesForm.innerHTML += '<label><input type="checkbox" name="checkbox" value="value">' + subjects[i].title + '</label><br>';
+    }
 
 }
 
 function selectPartiesToShow() {
 
+}
+
+
+function test() {
+    selectImportantQuestions();
 }

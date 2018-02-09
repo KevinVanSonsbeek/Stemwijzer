@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="assets/js/index.js"></script>
-    <script src="http://stemwijzer.dvc-icta.nl/data.js"></script>
+    <script src="http://stemwijzer.dvc-icta.nl/data.js"></script
+    <!-- script src="assets/js/data.js"></script -->
 </head>
 <body>
     <header>
@@ -14,6 +15,7 @@
             <h1 class="w3-center">Stemwijzer</h1>
         </div>
     </header>
+    <button onclick="test()">Test</button>
     <main id="main">
         <!--Start Screen -->
         <div id="startScreen">
@@ -41,7 +43,7 @@
             <br>
             <div class="w3-bar w3-center">
                 <button class="w3-button w3-blue w3-round w3-large" onclick='showPartiesTable()'>Wat vinden de partijen?</button>
-                <button class="w3-button w3-gray w3-round w3-large" onclick='nextQuestion(currentQuestion, \"none\")'>Sla vraag over</button>
+                <button class="w3-button w3-gray w3-round w3-large" onclick='nextQuestion(currentQuestion, "none")'>Sla vraag over</button>
             </div>
             <br>
             <div class="w3-row" id="partieOpinons" style="display:none;"><!-- Partie opinions -->
@@ -57,6 +59,45 @@
             </div>
         </div>
 
+        <!--Select important questions screen -->
+        <div id="importantQuestionsSelect">
+            <div class="w3-container">
+                <form id="partiesForm">
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Select parties screen -->
+        <div id="showPartiesList">
+            <div class="w3-container">
+
+            </div>
+        </div>
+
         <!-- End results screen -->
+        <div id="resultScreen" style="display:none;">
+            <div class="w3-container">
+            <p><button class="w3-button w3-black w3-round w3-large" onclick="changeToQuestionScreen()">Terug</button></p>
+            <h2>Uitslag:</h2>
+
+            <div class="w3-row"><!-- Partie opinions -->
+                <div class="w3-col m2 w3-center">
+                    <h1 id="partieName"></h1>
+                </div>
+                <div class="w3-col m1 w3-center">
+                    <h1 id="partiePoints"></h1>
+                </div>
+            </div>
+
+
+            <table id='myTable' class='w3-table w3-striped w3-border'>
+                <tr>
+                    <th>Partij</th>
+                    <th>Punten</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </main>
 </body>
