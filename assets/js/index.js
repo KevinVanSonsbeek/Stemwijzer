@@ -1,28 +1,21 @@
 var currentQuestion = 0;
-var partiesList = {};
 var answers = {};
+var questionData = {};
+var partieData = {};
+var partiesList = {};
 
 /**
  * Switches to screen showing questions
  */
 function changeToQuestionScreen() {
-
     partiesList = {};
-    var startScreen = document.getElementById("startScreen");
-    var questionScreen = document.getElementById("questionScreen");
-    var resultScreen = document.getElementById("resultScreen");
-
-
-    resultScreen.style.display = "none";
-    startScreen.style.display = "none";
-    questionScreen.style.display = "inline";
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("questionScreen").style.display = "inline";
+    document.getElementById("resultScreen").style.display = "none";
+    document.getElementById("importantQuestionsSelect").style.display = "none";
 
     //Load in question
     loadQuestion(currentQuestion);
-
-    for(var i = 0; i < parties.length; i++) {
-        partiesList[parties[i].name] = 0;
-    }
 
     if(answers == "") {
         for(var i = 0; i < subjects.length; i++) {
@@ -36,35 +29,24 @@ function changeToQuestionScreen() {
  */
 function changeToMainScreen() {
 
-    var startScreen = document.getElementById("startScreen");
-    var questionScreen = document.getElementById("questionScreen");
-    var partieOpinions = document.getElementById("partieOpinons");
-
-    startScreen.style.display = "inline";
-    questionScreen.style.display = "none";
-    partieOpinions.style.display = "none";
+    document.getElementById("startScreen").style.display = "inline";
+    document.getElementById("questionScreen").style.display = "none";
+    document.getElementById("partieOpinons").style.display = "none";
 
 }
 
 function changeToEndResultScreen() {
     calculatePartiePoints();
-    var resultScreen = document.getElementById("resultScreen");
-    var questionScreen = document.getElementById("questionScreen");
+    var partieDisplayList = document.getElementById("partieDisplayList");
 
-    var partieName = document.getElementById("partieName");
-    var partiePoints = document.getElementById("partiePoints");
+    document.getElementById("resultScreen").style.display = "inline";
+    document.getElementById("questionScreen").style.display = "none";
+    document.getElementById("showPartiesList").style.display = "none";
 
-    partieName.innerHTML = "";
-    partiePoints.innerHTML = "";
-
-
-    resultScreen.style.display = "inline";
-    questionScreen.style.display = "none";
-
+    console.log(partiesList);
     for (var i = 0; i < parties.length; i++) { //Loop through and compare partie positions
         // Add some text to the new cells:
-        partieName.innerHTML += parties[i].name + "\n";
-        partiePoints.innerHTML += partiesList[parties[i].name] + "\n";
+        partieDisplayList.innerHTML += "<p>" + parties[i].name + ": " + partiesList[parties[i].name] + "</p>";
     }
 }
 /**
@@ -73,6 +55,7 @@ function changeToEndResultScreen() {
 function loadQuestion(id) {
     document.getElementById("subjectTitle").innerHTML = subjects[id].title;
     document.getElementById("subjectStatement").innerHTML = subjects[id].statement;
+    document.getElementById("partieOpinons").style.display = "none";
 }
 
 /**
@@ -81,13 +64,9 @@ function loadQuestion(id) {
 function nextQuestion(id, choice) {
     //Save choice for question in local storage
     answers[id] = choice;
-    var partieOpinions = document.getElementById("partieOpinons");
-
-    partieOpinions.style.display = "none";
 
     if(currentQuestion >= (subjects.length -1)) {//If last question reached
-        console.dir(answers);
-        selectImportantQuestions();
+        showSelectImportantQuestions();
         //changeToEndResultScreen();
     }
     else {//Load next question
@@ -101,9 +80,7 @@ function nextQuestion(id, choice) {
  * Loads previous question
  */
 function previousQuestion(id) {
-    var partieOpinions = document.getElementById("partieOpinons");
 
-    partieOpinons.style.display = "none";
     if(currentQuestion == 0) {
         changeToMainScreen();
     }
@@ -138,41 +115,64 @@ function showPartiesTable() {
  * Calculates points the parties get
  */
 function calculatePartiePoints() {
+    var questionForm = document.getElementById("questionForm").elements;
+    for (var i=0; i<questionForm.length; i++) {
+        if (questionForm[i].type!="submit") {//we dont want to include the submit-buttom
+            questionData[questionForm[i].name] = questionForm[i].checked;
+        }
+    }
+    var partieForm = document.getElementById("partieForm").elements;
+    for (var i=0; i<partieForm.length; i++) {
+        if (partieForm[i].type!="submit") {//we dont want to include the submit-buttom
+            partieData[partieForm[i].name] = partieForm[i].checked;
+        }
+    }
+
+    partiesList = {};
+    for(var i = 0; i < parties.length; i++) {
+        partiesList[parties[i].name] = 0;
+    }
 
     for (var a = 0; a < subjects.length; a++) { //Loop through questions
 
         for (var b = 0; b < subjects[a].parties.length; b++) { //Loop through and compare partie positions
 
             if ((answers[a] == "pro" && subjects[a].parties[b].position == "pro") || (answers[a] == "contra" && subjects[a].parties[b].position == "contra") || (answers[a] == "ambivalent" && subjects[a].parties[b].position == "ambivalent")) {
-                partiesList[subjects[a].parties[b].name] += 1;
+
+               if(questionData[subjects[a].title] == true) {
+                   partiesList[subjects[a].parties[b].name] += 2;
+               }else {
+                   partiesList[subjects[a].parties[b].name] += 1;
+               }
             }
         }
 
     }
 }
 
-function selectImportantQuestions() {
-    var partiesForm = document.getElementById("partiesForm");
-    for(var i = 0; i < subjects.length; i++){
+function showSelectImportantQuestions() {
+    document.getElementById("importantQuestionsSelect").style.display = "inline"
+    document.getElementById("questionScreen").style.display = "none";
+    document.getElementById("showPartiesList").style.display = "none";
 
-        // var btn = document.createElement("INPUT");
-        // btn.type = "checkbox";
-        // var t = document.createTextNode("CLICK ME");
-        // btn.appendChild(t);
-        //
-        // partiesForm.appendChild(btn);
-
-
-        partiesForm.innerHTML += '<label><input type="checkbox" name="checkbox" value="value">' + subjects[i].title + '</label><br>';
+    var questionsList = document.getElementById("questionsList");
+    if(questionsList.innerHTML == "") {
+        for(var i = 0; i < subjects.length; i++){
+            questionsList.innerHTML += '<label><input type="checkbox" name="' + subjects[i].title + '"> ' + subjects[i].title + '</label><br>';
+        }
     }
 
 }
 
-function selectPartiesToShow() {
+function showSelectParties() {
+    document.getElementById("importantQuestionsSelect").style.display = "none";;
+    document.getElementById("resultScreen").style.display = "none";
+    document.getElementById("showPartiesList").style.display = "inline";
 
-}
-
-
-function test() {
-    selectImportantQuestions();
+    var partiesForm = document.getElementById("partieList");
+    if(partiesForm.innerHTML == "") {
+        for(var i = 0; i < parties.length; i++){
+            partiesForm.innerHTML += '<label><input type="checkbox" name="' + parties[i].name + '"> ' + parties[i].name + '</label><br>';
+        }
+    }
 }

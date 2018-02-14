@@ -15,7 +15,6 @@
             <h1 class="w3-center">Stemwijzer</h1>
         </div>
     </header>
-    <button onclick="test()">Test</button>
     <main id="main">
         <!--Start Screen -->
         <div id="startScreen">
@@ -35,9 +34,9 @@
                 <h2 class="w3-center" id='subjectTitle'></h2>
                 <p class="w3-center" id='subjectStatement'></p>
                 <div class="w3-bar w3-center">
-                    <button class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "pro")'>Eens</button>
-                    <button class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "ambivalent")'>Geen van Beide</button>
-                    <button class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "contra")'>Oneens</button>
+                    <button id="proButton" class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "pro")'>Eens</button>
+                    <button id="ambivalentButton" class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "ambivalent")'>Geen van Beide</button>
+                    <button id="contraButton" class="w3-button w3-black w3-round w3-large" onclick='nextQuestion(currentQuestion, "contra")'>Oneens</button>
                 </div>
             </div>
             <br>
@@ -49,54 +48,59 @@
             <div class="w3-row" id="partieOpinons" style="display:none;"><!-- Partie opinions -->
                 <div class="w3-col m4 w3-center">
                     <h1>Eens</h1>
+                    <ul></ul>
                 </div>
                 <div class="w3-col m4 w3-center">
                     <h1>Geen van beide</h1>
+                    <ul></ul>
                 </div>
                 <div class="w3-col m4 w3-center">
                     <h1>Oneens</h1>
+                    <ul></ul>
                 </div>
             </div>
         </div>
 
         <!--Select important questions screen -->
-        <div id="importantQuestionsSelect">
+        <div id="importantQuestionsSelect" style="display:none;">
             <div class="w3-container">
-                <form id="partiesForm">
-
+                <h1 class="w3-center">Voor u belangrijke vragen</h1>
+                <p class="w3-center">De vragen die u hier selecteerd zullen zwaarder mee tellen.</p>
+                <form id="questionForm">
+                    <div id="questionsList"></div>
                 </form>
+                <div class="w3-bar w3-center">
+                    <button class="w3-button w3-black w3-round w3-large" onclick="changeToQuestionScreen()">Terug</button>
+                    <button class="w3-button w3-black w3-round w3-large" onclick="showSelectParties()">Verder</button>
+                </div>
             </div>
         </div>
 
         <!-- Select parties screen -->
-        <div id="showPartiesList">
+        <div id="showPartiesList" style="display:none;">
             <div class="w3-container">
-
+                <h1 class="w3-center">Partijen</h1>
+                <p class="w3-center">Selecteer hier welke partijen u wel en niet wilt zien.</p>
+                <form id="partieForm">
+                    <div id="partieList"></div>
+                </form>
+                <br>
+                <div class="w3-bar w3-center">
+                    <button class="w3-button w3-black w3-round w3-large" onclick="showSelectImportantQuestions()">Terug</button>
+                    <button class="w3-button w3-black w3-round w3-large" onclick="changeToEndResultScreen()">Verder</button>
+                </div>
             </div>
         </div>
 
         <!-- End results screen -->
         <div id="resultScreen" style="display:none;">
             <div class="w3-container">
-            <p><button class="w3-button w3-black w3-round w3-large" onclick="changeToQuestionScreen()">Terug</button></p>
-            <h2>Uitslag:</h2>
-
-            <div class="w3-row"><!-- Partie opinions -->
-                <div class="w3-col m2 w3-center">
-                    <h1 id="partieName"></h1>
+                <p><button class="w3-button w3-black w3-round w3-large" onclick="showSelectParties()">Terug</button></p>
+                <div class="w3-row"><!-- Partie opinions -->
+                    <div id="partieDisplayList" class="w3-col">
+                        <h1>Parties:</h1>
+                    </div>
                 </div>
-                <div class="w3-col m1 w3-center">
-                    <h1 id="partiePoints"></h1>
-                </div>
-            </div>
-
-
-            <table id='myTable' class='w3-table w3-striped w3-border'>
-                <tr>
-                    <th>Partij</th>
-                    <th>Punten</th>
-                    </tr>
-                </table>
             </div>
         </div>
     </main>
