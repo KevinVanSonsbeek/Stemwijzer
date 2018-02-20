@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="assets/js/index.js"></script>
-    <script src="http://stemwijzer.dvc-icta.nl/data.js"></script
+    <script src="http://stemwijzer.dvc-icta.nl/data.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <!-- script src="assets/js/data.js"></script -->
 </head>
 <body>
@@ -45,18 +46,20 @@
                 <button class="w3-button w3-gray w3-round w3-large" onclick='nextQuestion(currentQuestion, "none")'>Sla vraag over</button>
             </div>
             <br>
-            <div class="w3-row" id="partieOpinons" style="display:none;"><!-- Partie opinions -->
+
+            <!-- Partie opinions -->
+            <div class="w3-row" id="partieOpinons" style="display:none;">
                 <div class="w3-col m4 w3-center">
                     <h1>Eens</h1>
-                    <ul></ul>
+                    <ul id="partiesProList" class="w3-ul"></ul>
                 </div>
                 <div class="w3-col m4 w3-center">
                     <h1>Geen van beide</h1>
-                    <ul></ul>
+                    <ul id="partiesAmbivalentList" class="w3-ul"></ul>
                 </div>
                 <div class="w3-col m4 w3-center">
                     <h1>Oneens</h1>
-                    <ul></ul>
+                    <ul id="partiesContraList" class="w3-ul"></ul>
                 </div>
             </div>
         </div>

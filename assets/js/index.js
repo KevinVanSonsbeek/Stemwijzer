@@ -94,18 +94,53 @@ function previousQuestion(id) {
  * Shows the table with parties positions on a question
  */
 function showPartiesTable() {
+
+    var proList = document.getElementById("partiesProList");
+    var ambivalentList = document.getElementById("partiesAmbivalentList");
+    var contraList = document.getElementById("partiesContraList");
+
+    var proListText = "";
+    var ambivalentListText = "";
+    var contraListText = '';
+
     for(var i = 0; i < subjects[currentQuestion].parties.length; i++) {
-        //console.log(subjects[currentQuestion].parties[i]);
+
+        if(subjects[currentQuestion].parties[i].position === "pro")
+            proListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
+
+        if(subjects[currentQuestion].parties[i].position === "ambivalent")
+            ambivalentListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
+
+        if(subjects[currentQuestion].parties[i].position === "contra")
+            contraListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
+
     }
 
-    if( partieOpinons.style.display == "none") {
-        var partieOpinions = document.getElementById("partieOpinons");
+    proList.innerHTML = proListText;
+    ambivalentList.innerHTML = ambivalentListText;
+    contraList.innerHTML = contraListText;
 
+    var partieOpinions = document.getElementById("partieOpinons");
+
+    if( partieOpinons.style.display === "none") {
         partieOpinons.style.display = "inline";
     } else {
-        var partieOpinions = document.getElementById("partieOpinons");
-
         partieOpinons.style.display = "none";
+    }
+
+
+}
+
+
+/**
+ * Toggle display of partie explanation
+ */
+function toggleExplanationDisplay(id) {
+    var explanation = document.getElementById(id);
+    if(explanation.style.display === "none"){
+        explanation.style.display = "inline";
+    } else {
+        explanation.style.display = "none";
     }
 
 
@@ -150,6 +185,9 @@ function calculatePartiePoints() {
     }
 }
 
+/**
+ * Shows screen where you can select important questions
+ */
 function showSelectImportantQuestions() {
     document.getElementById("importantQuestionsSelect").style.display = "inline"
     document.getElementById("questionScreen").style.display = "none";
@@ -164,6 +202,9 @@ function showSelectImportantQuestions() {
 
 }
 
+/**
+ * Shows screen with parties you can choose to show
+ */
 function showSelectParties() {
     document.getElementById("importantQuestionsSelect").style.display = "none";;
     document.getElementById("resultScreen").style.display = "none";
