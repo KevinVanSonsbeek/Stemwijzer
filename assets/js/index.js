@@ -35,20 +35,42 @@ function changeToMainScreen() {
 
 }
 
+/**
+ * Switch to end result screen
+ */
 function changeToEndResultScreen() {
     calculatePartiePoints();
+
+    if(Object.keys(partiesList).length < 3) {
+        alert("Selectuur a.u.b. minimaal 3 partijen!");
+        return;
+    }
+
     var partieDisplayList = document.getElementById("partieDisplayList");
 
     document.getElementById("resultScreen").style.display = "inline";
     document.getElementById("questionScreen").style.display = "none";
     document.getElementById("showPartiesList").style.display = "none";
 
-    console.log(partiesList);
-    for (var i = 0; i < parties.length; i++) { //Loop through and compare partie positions
-        // Add some text to the new cells:
-        partieDisplayList.innerHTML += "<p>" + parties[i].name + ": " + partiesList[parties[i].name] + "</p>";
+    partieDisplayList.innerHTML = "";
+
+
+    //Convert object to array and sort
+    var sortedPartiesList = [];
+
+    for (var partie in partiesList) {
+        sortedPartiesList.push([partie, partiesList[partie]]);
+    }
+
+    sortedPartiesList.sort(function(a, b) {
+        return b[1] - a[1];
+    });
+
+    for(partie in sortedPartiesList) {
+        partieDisplayList.innerHTML += "<p>" + sortedPartiesList[partie][0] + "(" + partiesList[sortedPartiesList[partie][0]] + " punten)</p>";
     }
 }
+
 /**
  * Changes title and statement in the DOM
  */
@@ -106,13 +128,12 @@ function showPartiesTable() {
     for(var i = 0; i < subjects[currentQuestion].parties.length; i++) {
 
         if(subjects[currentQuestion].parties[i].position === "pro")
-            proListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
-
+            proListText += "<li><p><a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'>" + subjects[currentQuestion].parties[i].name + " <i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
         if(subjects[currentQuestion].parties[i].position === "ambivalent")
-            ambivalentListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
+            ambivalentListText += "<li><p><a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'>" + subjects[currentQuestion].parties[i].name + " <i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
 
         if(subjects[currentQuestion].parties[i].position === "contra")
-            contraListText += "<li><p>" + subjects[currentQuestion].parties[i].name + " <a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'><i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
+            contraListText += "<li><p><a onclick='toggleExplanationDisplay(\"" + subjects[currentQuestion].parties[i].name + "Explanation\")'>" + subjects[currentQuestion].parties[i].name + " <i class='fa fa-caret-down'></i></a></p> <p style='display:none;' id='" + subjects[currentQuestion].parties[i].name + "Explanation'>\"" + subjects[currentQuestion].parties[i].explanation + "\"</p></li>\n";
 
     }
 
@@ -150,12 +171,17 @@ function toggleExplanationDisplay(id) {
  * Calculates points the parties get
  */
 function calculatePartiePoints() {
+
+    //Get checked boxes from questions form
     var questionForm = document.getElementById("questionForm").elements;
     for (var i=0; i<questionForm.length; i++) {
         if (questionForm[i].type!="submit") {//we dont want to include the submit-buttom
             questionData[questionForm[i].name] = questionForm[i].checked;
         }
     }
+
+
+    //Get checked boxes from parties form
     var partieForm = document.getElementById("partieForm").elements;
     for (var i=0; i<partieForm.length; i++) {
         if (partieForm[i].type!="submit") {//we dont want to include the submit-buttom
@@ -163,10 +189,14 @@ function calculatePartiePoints() {
         }
     }
 
+
+    //Generate array with all parties
     partiesList = {};
     for(var i = 0; i < parties.length; i++) {
         partiesList[parties[i].name] = 0;
     }
+
+
 
     for (var a = 0; a < subjects.length; a++) { //Loop through questions
 
@@ -183,6 +213,14 @@ function calculatePartiePoints() {
         }
 
     }
+
+    //Remove parties that are not selected
+    for(partie in partiesList) {
+        if(partieData[partie] == false) {
+            delete partiesList[partie];
+        }
+    }
+
 }
 
 /**
